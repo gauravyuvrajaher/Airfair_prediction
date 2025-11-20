@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[2]:
 
 
 import streamlit as st
 import pandas as pd
 import numpy as np
 import statsmodels.api as sm
-import seaborn as sns
-import matplotlib.pyplot as plt
+import seaborn as sns  # Optional, can remove if not needed
 
 st.set_page_config(page_title="Airfare Prediction App", layout="wide")
 
@@ -43,7 +42,6 @@ def load_data():
 
     return df, model
 
-
 df, model = load_data()
 
 # ----------------------------
@@ -74,18 +72,16 @@ st.write("Predict average airfare for a new route based on route and city charac
 # 4. Predict Fare on Button Click
 # ----------------------------
 if st.button("🔮 Predict Fare"):
-    # Encode categorical inputs
     vacation_map = {"Yes": 1, "No": 0}
     slot_map = {"Controlled": 1, "Free": 0}
     gate_map = {"Controlled": 1, "Free": 0}
 
-    # Prepare input data
     route_data = {
         "const": 1,
         "COUPON": COUPON,
         "NEW": NEW,
         "VACATION": vacation_map[VACATION],
-        "SW": 0,  # Start without Southwest
+        "SW": 0,
         "HI": HI,
         "S_INCOME": S_INCOME,
         "E_INCOME": E_INCOME,
@@ -99,10 +95,8 @@ if st.button("🔮 Predict Fare"):
 
     X_new = pd.DataFrame([route_data])
 
-    # Predict without Southwest
     fare_no_sw = model.predict(X_new)[0]
 
-    # Predict with Southwest
     X_new_sw = X_new.copy()
     X_new_sw["SW"] = 1
     fare_with_sw = model.predict(X_new_sw)[0]
@@ -118,36 +112,24 @@ if st.button("🔮 Predict Fare"):
     st.markdown("---")
 
     # ----------------------------
-    # 5. Visualization Tabs
+    # 5. Visualization Tabs using Streamlit charts
     # ----------------------------
     tab1, tab2, tab3 = st.tabs(["📊 Actual vs Predicted", "📉 Residuals", "📦 Residual Distribution"])
 
     with tab1:
-        fig, ax = plt.subplots(figsize=(8,6))
-        sns.scatterplot(x=df["FARE"], y=df["Predicted_FARE"], alpha=0.7, color="royalblue", ax=ax)
-        ax.plot([df["FARE"].min(), df["FARE"].max()],
-                [df["FARE"].min(), df["FARE"].max()],
-                'r--', linewidth=2)
-        ax.set_title("Actual vs Predicted Fare")
-        ax.set_xlabel("Actual Fare")
-        ax.set_ylabel("Predicted Fare")
-        st.pyplot(fig)
+        st.subheader("Actual vs Predicted Fare")
+        chart_data = df[["FARE", "Predicted_FARE"]]
+        st.line_chart(chart_data)  # Simple line chart
 
     with tab2:
-        fig, ax = plt.subplots(figsize=(8,6))
-        sns.scatterplot(x=df["Predicted_FARE"], y=df["Residuals"], color="darkorange", ax=ax)
-        ax.axhline(0, color='red', linestyle='--', linewidth=2)
-        ax.set_title("Residuals vs Predicted Fare")
-        ax.set_xlabel("Predicted Fare")
-        ax.set_ylabel("Residuals")
-        st.pyplot(fig)
+        st.subheader("Residuals vs Predicted Fare")
+        chart_data = df[["Predicted_FARE", "Residuals"]].rename(columns={"Predicted_FARE":"x","Residuals":"y"})
+        st.bar_chart(chart_data.set_index("x"))
 
     with tab3:
-        fig, ax = plt.subplots(figsize=(8,6))
-        sns.histplot(df["Residuals"], bins=30, kde=True, color='green', ax=ax)
-        ax.set_title("Distribution of Residuals")
-        ax.set_xlabel("Residuals")
-        st.pyplot(fig)
+        st.subheader("Distribution of Residuals")
+        hist_data = pd.DataFrame(df["Residuals"])
+        st.bar_chart(hist_data)  # Simple bar chart for residual distribution
 
 else:
     st.info("👈 Enter values in the sidebar and click **Predict Fare** to see results.")
