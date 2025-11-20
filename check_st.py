@@ -1,42 +1,33 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[2]:
 
 
 import streamlit as st
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 
-# Page title
-st.title("🎈 Simple Streamlit Demo App")
+# Title and subtitle
+st.title("💡 My First Streamlit App")
+st.subheader("No external libraries — just Streamlit!")
 
 # Input section
 name = st.text_input("Enter your name:")
 age = st.number_input("Enter your age:", min_value=1, max_value=120, step=1)
 
-if st.button("Submit"):
-    st.success(f"Hello {name}! You are {age} years old.")
-    st.balloons()
+# Button to trigger output
+if st.button("Say Hello"):
+    st.success(f"Hello, {name}! You are {age} years old. 🎉")
+else:
+    st.info("👈 Enter your name and age, then click 'Say Hello'.")
 
-# Example data and chart
-st.subheader("📊 Random Data Visualization")
+# A simple checkbox and slider
+agree = st.checkbox("I like Streamlit!")
+level = st.slider("How much do you like it?", 0, 100, 50)
 
-data = pd.DataFrame({
-    'x': np.arange(1, 11),
-    'y': np.random.randint(10, 100, 10)
-})
-
-st.write("Here’s a random dataset:")
-st.dataframe(data)
-
-fig, ax = plt.subplots()
-ax.plot(data['x'], data['y'], marker='o', color='teal')
-ax.set_title("Random Line Chart")
-ax.set_xlabel("X Axis")
-ax.set_ylabel("Y Axis")
-st.pyplot(fig)
+if agree:
+    st.write(f"You like Streamlit {level}% 💪")
+else:
+    st.write("Try checking the box above 👆")
 
 
 # In[ ]:
