@@ -34,13 +34,9 @@ test_size = st.sidebar.slider("Test Size (%)", 20, 40, 30) / 100
 # -------------------------------------------------------
 @st.cache_data
 def load_and_prepare_data():
-    DATA_PATH = Path("Airfares_data.xlsx")
-
-    if not DATA_PATH.exists():
-        st.error("❌ Dataset not found. Ensure 'data/airfares.xlsx' exists in the repo.")
-        st.stop()
-
-    df = pd.read_excel(DATA_PATH)
+    df = pd.read_excel(
+    "https://raw.githubusercontent.com/gauravyuvrajaher/Airfair_prediction/main/Airfares_data.xlsx"
+)
 
     # Encode categorical variables
     df["VACATION"] = df["VACATION"].map({"Yes": 1, "No": 0})
