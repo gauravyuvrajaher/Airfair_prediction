@@ -34,7 +34,7 @@ test_size = st.sidebar.slider("Test Size (%)", 20, 40, 30) / 100
 # -------------------------------------------------------
 @st.cache_data
 def load_and_prepare_data():
-    DATA_PATH = Path("Airfares_data") / "Airfares_data.xlsx"
+    DATA_PATH = Path("Airfares_data.xlsx")
 
     if not DATA_PATH.exists():
         st.error("❌ Dataset not found. Ensure 'data/airfares.xlsx' exists in the repo.")
