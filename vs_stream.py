@@ -35,7 +35,7 @@ test_size = st.sidebar.slider("Test Size (%)", 20, 40, 30) / 100
 @st.cache_data
 def load_and_prepare_data():
     df = pd.read_excel(
-        "Airfares_data.xlsx" )
+        "https://raw.githubusercontent.com/gauravyuvrajaher/Airfair_prediction/main/Airfares_data.xlsx" )
 
     # Encode categorical variables
     df["VACATION"] = df["VACATION"].map({"Yes": 1, "No": 0})
@@ -184,5 +184,6 @@ if submitted:
 
     fare = model.predict(input_df)[0]
     st.success(f"💰 Predicted Airfare: **${fare:,.2f}**")
+
 
 
