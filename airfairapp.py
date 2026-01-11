@@ -12,14 +12,8 @@ from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# -------------------------------------------------------
-# Page Config
-# -------------------------------------------------------
 st.set_page_config(page_title="✈️ Airfare Prediction App", layout="wide")
 
-# -------------------------------------------------------
-# Sidebar – Model Settings
-# -------------------------------------------------------
 st.sidebar.header("⚙️ Model Settings")
 
 model_choice = st.sidebar.selectbox(
@@ -29,9 +23,6 @@ model_choice = st.sidebar.selectbox(
 
 test_size = st.sidebar.slider("Test Size (%)", 20, 40, 30) / 100
 
-# -------------------------------------------------------
-# Load & Prepare Data (GitHub + Local Safe)
-# -------------------------------------------------------
 @st.cache_data
 def load_and_prepare_data():
     df = pd.read_excel(
@@ -56,16 +47,12 @@ def load_and_prepare_data():
 
 X, y = load_and_prepare_data()
 
-# -------------------------------------------------------
-# Train / Test Split
-# -------------------------------------------------------
+
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=test_size, random_state=42
 )
 
-# -------------------------------------------------------
-# Model Training
-# -------------------------------------------------------
+
 if model_choice == "Linear Regression":
     model = LinearRegression()
 
@@ -88,18 +75,12 @@ else:
 
 model.fit(X_train, y_train)
 
-# -------------------------------------------------------
-# Evaluation
-# -------------------------------------------------------
 y_pred = model.predict(X_test)
 
 r2 = r2_score(y_test, y_pred)
 mae = mean_absolute_error(y_test, y_pred)
 rmse = np.sqrt(mean_squared_error(y_test, y_pred))
 
-# -------------------------------------------------------
-# UI – Title & Metrics
-# -------------------------------------------------------
 st.title("💺 Airfare Prediction App")
 
 col1, col2, col3 = st.columns(3)
@@ -107,9 +88,6 @@ col1.metric("R² Score", f"{r2:.3f}")
 col2.metric("MAE", f"${mae:,.2f}")
 col3.metric("RMSE", f"${rmse:,.2f}")
 
-# -------------------------------------------------------
-# Visual Diagnostics
-# -------------------------------------------------------
 tab1, tab2 = st.tabs(["📊 Actual vs Predicted", "📉 Residuals"])
 
 with tab1:
@@ -126,9 +104,6 @@ with tab2:
     sns.histplot(residuals, kde=True, ax=ax)
     st.pyplot(fig)
 
-# -------------------------------------------------------
-# Prediction Form – Clean & Side-by-Side
-# -------------------------------------------------------
 st.subheader("🔮 Predict Fare for New Route")
 
 with st.form("prediction_form"):
@@ -162,9 +137,7 @@ with st.form("prediction_form"):
 
     submitted = st.form_submit_button("Predict Fare")
 
-# -------------------------------------------------------
-# Prediction Output
-# -------------------------------------------------------
+
 if submitted:
     input_df = pd.DataFrame([{
         "COUPON": COUPON,
@@ -184,6 +157,7 @@ if submitted:
 
     fare = model.predict(input_df)[0]
     st.success(f"💰 Predicted Airfare: **${fare:,.2f}**")
+
 
 
 
